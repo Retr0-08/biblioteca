@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gerenciar Livros - Biblioteca EEEP</title>
+  <link rel="stylesheet" href="/home/style.css/gen.css">
+</head>
+<body>
+  <header>
+    <h1>Biblioteca EEEP</h1>
+    <nav>
+      <a href="home.html">Início</a>
+      <a href="#">Livros</a>
+      <a href="#">Empréstimos</a>
+      <a href="#">Usuários</a>
+      <a href="#">Sair</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>📚 Gerenciar Livros</h2>
+
+    <form class="form-livro" onsubmit="adicionarLivro(event)">
+      <input type="text" id="titulo" placeholder="Título do Livro" required>
+      <input type="text" id="autor" placeholder="Autor" required>
+      <input type="text" id="ano" placeholder="Ano" required>
+      <input type="number" id="quantidade" placeholder="Quantidade" min="1" required>
+      <select id="status">
+        <option value="Disponível">Disponível</option>
+        <option value="Emprestado">Emprestado</option>
+      </select>
+      <button type="submit">Adicionar</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Ano</th>
+          <th>Qtd.</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-livros"></tbody>
+    </table>
+  </main>
+
+  <footer>
+    © 2025 - Sistema de Biblioteca EEEP | Governo do Estado do Ceará
+  </footer>
+
+  <script>
+    let livros = JSON.parse(localStorage.getItem("livros")) || [];
+
+    function salvarLivros() {
+      localStorage.setItem("livros", JSON.stringify(livros));
+    }
+
+    function renderizarTabela() {
+      const tabela = document.getElementById("tabela-livros");
+      tabela.innerHTML = "";
+
+      livros.forEach((livro, index) => {
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+          <td>${livro.titulo}</td>
+          <td>${livro.autor}</td>
+          <td>${livro.ano}</td>
+          <td>${livro.quantidade}</td>
+          <td>${livro.status}</td>
+          <td class="acoes">
+            <button class="editar" onclick="editarLivro(${index})">Editar</button>
+            <button class="remover" onclick="removerLivro(${index})">Remover</button>
+          </td>
+        `;
+        tabela.appendChild(linha);
+      });
+    }
+
+    function adicionarLivro(event) {
+      event.preventDefault();
+
+      const titulo = document.getElementById("titulo").value;
+      const autor = document.getElementById("autor").value;
+      const ano = document.getElementById("ano").value;
+      const quantidade = document.getElementById("quantidade").value;
+      const status = document.getElementById("status").value;
+
+      const novoLivro = { titulo, autor, ano, quantidade, status };
+      livros.push(novoLivro);
+      salvarLivros();
+      renderizarTabela();
+
+      document.getElementById("titulo").value = "";
+      document.getElementById("autor").value = "";
+      document.getElementById("ano").value = "";
+      document.getElementById("quantidade").value = "";
+      document.getElementById("status").value = "Disponível";
+    }
+
+    function removerLivro(index) {
+      livros.splice(index, 1);
+      salvarLivros();
+      renderizarTabela();
+    }
+
+    function editarLivro(index) {
+      const livro = livros[index];
+      document.getElementById("titulo").value = livro.titulo;
+      document.getElementById("autor").value = livro.autor;
+      document.getElementById("ano").value = livro.ano;
+      document.getElementById("quantidade").value = livro.quantidade;
+      document.getElementById("status").value = livro.status;
+
+      livros.splice(index, 1);
+      salvarLivros();
+      renderizarTabela();
+    }
+
+    // Carregar ao abrir a página
+    renderizarTabela();
+  </script>
+</body>
+</html>

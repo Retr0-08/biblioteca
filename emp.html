@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Empréstimo de Livros</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eafaf1;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2e7d32;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .botao-inicio {
+      background-color: #ff9800;
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #2e7d32;
+    }
+
+    form {
+      background-color: #ffffff;
+      padding: 1rem;
+      border: 2px solid #ff9800;
+      border-radius: 8px;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      padding: 0.7rem 1rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2e7d32;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f5f5f5;
+    }
+
+    .devolver {
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="margin: 0;">Empréstimo de Livros</h1>
+    <a href="home.html" class="botao-inicio">Início</a>
+  </header>
+
+  <main>
+    <h2>Realizar Empréstimo</h2>
+    <form id="formEmprestimo">
+      <label for="livro">Livro:</label>
+      <input type="text" id="livro" required />
+
+      <label for="nomeAluno">Nome do Aluno:</label>
+      <input type="text" id="nomeAluno" required />
+
+      <label for="serie">Série:</label>
+      <select id="serie" required>
+        <option value="">Selecione</option>
+        <option>1º Ano</option>
+        <option>2º Ano</option>
+        <option>3º Ano</option>
+      </select>
+
+      <label for="curso">Curso:</label>
+      <select id="curso" required>
+        <option value="">Selecione</option>
+        <option>Téc. em Administração</option>
+        <option>Téc. em Agronegócio</option>
+        <option>Téc. em Desenvolvimento De Sistemas</option>
+        <option>Téc. em Enfermagem</option>
+      </select>
+
+      <button type="submit">Emprestar Livro</button>
+    </form>
+
+    <h2>Livros Emprestados</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Livro</th>
+          <th>Aluno</th>
+          <th>Série</th>
+          <th>Curso</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaEmprestimos"></tbody>
+    </table>
+  </main>
+
+  <script>
+    const formulario = document.getElementById("formEmprestimo");
+    const tabela = document.getElementById("tabelaEmprestimos");
+
+    function carregarEmprestimos() {
+      const emprestimos = JSON.parse(localStorage.getItem("emprestimos")) || [];
+      tabela.innerHTML = "";
+
+      emprestimos.forEach((e, index) => {
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+          <td>${e.livro}</td>
+          <td>${e.aluno}</td>
+          <td>${e.serie}</td>
+          <td>${e.curso}</td>
+          <td><button class="devolver" onclick="removerEmprestimo(${index})">Devolver</button></td>
+        `;
+        tabela.appendChild(linha);
+      });
+    }
+
+    formulario.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const emprestimos = JSON.parse(localStorage.getItem("emprestimos")) || [];
+
+      const novo = {
+        livro: document.getElementById("livro").value,
+        aluno: document.getElementById("nomeAluno").value,
+        serie: document.getElementById("serie").value,
+        curso: document.getElementById("curso").value,
+      };
+
+      emprestimos.push(novo);
+      localStorage.setItem("emprestimos", JSON.stringify(emprestimos));
+
+      formulario.reset();
+      carregarEmprestimos();
+    });
+
+    function removerEmprestimo(index) {
+      const emprestimos = JSON.parse(localStorage.getItem("emprestimos")) || [];
+      emprestimos.splice(index, 1);
+      localStorage.setItem("emprestimos", JSON.stringify(emprestimos));
+      carregarEmprestimos();
+    }
+
+    // Carregar os empréstimos ao abrir a página
+    carregarEmprestimos();
+  </script>
+</body>
+</html>

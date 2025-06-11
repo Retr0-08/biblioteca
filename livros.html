@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Livros na Biblioteca - EEEP</title>
+  <link rel="stylesheet" href="/home/style.css/livros.css">
+</head>
+<body>
+  <header>
+    <h1>📚 Biblioteca EEEP</h1>
+    <nav>
+      <a href="home.html">Início</a>
+      <a href="livros.html">Gerenciar Livros</a>
+      <a href="emp.html">Empréstimos</a>
+      <a href="login.html">Sair</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Livros na Biblioteca</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Ano</th>
+          <th>Quantidade</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="listaLivros">
+        <!-- Os livros aparecem aqui via JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <footer>
+    © 2025 - Sistema de Biblioteca EEEP | Governo do Estado do Ceará
+  </footer>
+
+  <script>
+    const livros = [
+      { titulo: "Dom Casmurro", autor: "Machado de Assis", ano: 1899, quantidade: 3, status: "Disponível" },
+      { titulo: "O Pequeno Príncipe", autor: "Antoine de Saint-Exupéry", ano: 1943, quantidade: 1, status: "Emprestado" },
+      { titulo: "1984", autor: "George Orwell", ano: 1949, quantidade: 5, status: "Disponível" },
+      { titulo: "Capitães da Areia", autor: "Jorge Amado", ano: 1937, quantidade: 2, status: "Emprestado" }
+    ];
+
+    function carregarLivros() {
+      const tbody = document.getElementById("listaLivros");
+      tbody.innerHTML = "";
+
+      livros.forEach(livro => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${livro.titulo}</td>
+          <td>${livro.autor}</td>
+          <td>${livro.ano}</td>
+          <td>${livro.quantidade}</td>
+          <td class="${livro.status === 'Disponível' ? 'status-disponivel' : 'status-emprestado'}">${livro.status}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    carregarLivros();
+  </script>
+</body>
+</html>
